@@ -52,6 +52,7 @@
     */
     height: calc(100% - $sprite-info-height);
     overflow-y: auto;
+    
 }
 
 .items-wrapper {

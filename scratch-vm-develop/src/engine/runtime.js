@@ -165,6 +165,8 @@ class Runtime extends EventEmitter {
         this.socket = io(`//${adapterHost}:12358`, {
             transports: ["websocket"]
         });
+
+        this.socket.emit("actuator", { topic: 'eim', payload: 'aaa' });
         console.log('123');
         /**
          * Target management and storage.目标管理和存储

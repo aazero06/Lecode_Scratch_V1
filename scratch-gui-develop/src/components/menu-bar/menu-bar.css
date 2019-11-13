@@ -27,7 +27,7 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: $menu-bar-standard-font-size;
     font-weight: bold;
-    background-color: $motion-primary;
+    background-color: rgb(255, 171, 25);
     color: $ui-white;
 }
 
@@ -214,3 +214,5 @@
 .mystuff > a {
   background-image: url("/images/mystuff.png");
 }
+
+

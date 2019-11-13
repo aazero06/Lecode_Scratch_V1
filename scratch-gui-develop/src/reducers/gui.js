@@ -28,6 +28,9 @@ import throttle from 'redux-throttle';
 
 import decks from '../lib/libraries/decks/index.jsx';
 
+//
+import arduinoReducer, {arduinoInitialState} from './arduino-panel';
+
 const guiMiddleware = compose(applyMiddleware(throttle(300, {leading: true, trailing: true})));
 
 const guiInitialState = {
@@ -138,7 +141,9 @@ const guiReducer = combineReducers({
     timeout: timeoutReducer,
     toolbox: toolboxReducer,
     vm: vmReducer,
-    vmStatus: vmStatusReducer
+    vmStatus: vmStatusReducer,
+    //
+    arduino: arduinoReducer
 });
 
 export {

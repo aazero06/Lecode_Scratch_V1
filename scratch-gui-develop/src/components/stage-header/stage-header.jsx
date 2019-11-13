@@ -15,8 +15,10 @@ import fullScreenIcon from './icon--fullscreen.svg';
 import largeStageIcon from './icon--large-stage.svg';
 import smallStageIcon from './icon--small-stage.svg';
 import unFullScreenIcon from './icon--unfullscreen.svg';
+//
 
 import styles from './stage-header.css';
+
 
 const messages = defineMessages({
     largeStageSizeMessage: {
@@ -56,7 +58,10 @@ const StageHeaderComponent = function (props) {
         onSetStageFull,
         onSetStageUnFull,
         stageSizeMode,
-        vm
+        vm,
+
+        //
+        toggleArduinoPanel
     } = props;
 
     let header = null;
@@ -92,6 +97,27 @@ const StageHeaderComponent = function (props) {
                 []
             ) : (
                 <div className={styles.stageSizeToggleGroup}>
+                    
+                    {/********/}
+                    {/* <div>
+                        <Button
+                            className={classNames(
+                                styles.stageButton,
+                                styles.stageButtonFirst,
+                               
+                            )}
+                            onClick={toggleArduinoPanel}
+                        >
+                            {/* <img
+                                alt={props.intl.formatMessage(messages.smallStageSizeMessage)}
+                                className={styles.stageButtonIcon}
+                                draggable={false}
+                                src={arduino}
+                            /> */}
+                        {/* </Button>
+                    </div> */}
+                    
+                    
                     <div>
                         <Button
                             className={classNames(
@@ -172,7 +198,10 @@ StageHeaderComponent.propTypes = {
     onSetStageSmall: PropTypes.func.isRequired,
     onSetStageUnFull: PropTypes.func.isRequired,
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
-    vm: PropTypes.instanceOf(VM).isRequired
+    vm: PropTypes.instanceOf(VM).isRequired,
+    //
+    toggleArduinoPanel: PropTypes.func.isRequired
+
 };
 
 StageHeaderComponent.defaultProps = {

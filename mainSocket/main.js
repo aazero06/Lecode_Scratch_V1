@@ -14,8 +14,13 @@ io.on('connection', function (socket) {
 	socket.on('recommend',function (data,callback){
 		console.log('发送消息给scratch3.0'+ data['email']);
 		
-		io.sockets.emit('recommendModule',{hello:data['email']});
-	})
+		io.sockets.emit('recommendModule',{type:data});
+	});
+	
+	socket.on('clear',function(){
+		io.sockets.emit('clear');
+		console.log('收到clear');
+	});
 	
     //断开连接会发送
     socket.on('disconnect', function () {

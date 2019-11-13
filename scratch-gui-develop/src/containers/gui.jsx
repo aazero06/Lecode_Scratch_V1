@@ -22,7 +22,8 @@ import {
 
 import {
     closeCostumeLibrary,
-    closeBackdropLibrary
+    closeBackdropLibrary,
+    closeTelemetryModal
 } from '../reducers/modals';
 
 import FontLoaderHOC from '../lib/font-loader-hoc.jsx';
@@ -37,6 +38,9 @@ import cloudManagerHOC from '../lib/cloud-manager-hoc.jsx';
 
 import GUIComponent from '../components/gui/gui.jsx';
 
+//
+import {toggleArduinoPanel} from '../reducers/arduino-panel';
+
 const messages = defineMessages({
     defaultProjectTitle: {
         id: 'gui.gui.defaultProjectTitle',
@@ -49,6 +53,9 @@ class GUI extends React.Component {
     componentDidMount () {
         this.setReduxTitle(this.props.projectTitle);
         this.props.onStorageInit(storage);
+        //
+        this.props.onVmInit(this.props.vm);
+        window.vm = this.props.vm;
     }
     componentDidUpdate (prevProps) {
         if (this.props.projectId !== prevProps.projectId && this.props.projectId !== null) {
@@ -85,6 +92,8 @@ class GUI extends React.Component {
             projectHost,
             projectId,
             projectTitle,
+            //
+            onVmInit,
             /* eslint-enable no-unused-vars */
             children,
             fetchingProject,
@@ -98,9 +107,6 @@ class GUI extends React.Component {
                 {...componentProps}
             >
                 {children}
-
-								
-
             </GUIComponent>
         );
     }
@@ -123,6 +129,9 @@ GUI.propTypes = {
     onUpdateProjectId: PropTypes.func,
     onUpdateProjectTitle: PropTypes.func,
     onUpdateReduxProjectTitle: PropTypes.func,
+    //
+    onVmInit:PropTypes.func,
+    //
     previewInfoVisible: PropTypes.bool,
     projectHost: PropTypes.string,
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -132,7 +141,9 @@ GUI.propTypes = {
 
 GUI.defaultProps = {
     onStorageInit: storageInstance => storageInstance.addOfficialScratchWebStores(),
-    onUpdateProjectId: () => {}
+    onUpdateProjectId: () => {},
+    //
+    onVmInit:(/* vm */) => {}
 };
 
 const mapStateToProps = state => {
@@ -166,13 +177,15 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    onExtensionButtonClick: () => dispatch(openExtensionLibrary()),//添加扩展按钮
+    onExtensionButtonClick: () => dispatch(openExtensionLibrary()), //添加扩展按钮
     onActivateTab: tab => dispatch(activateTab(tab)),
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
     onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
-    onUpdateReduxProjectTitle: title => dispatch(setProjectTitle(title))
+    onUpdateReduxProjectTitle: title => dispatch(setProjectTitle(title)),
+    //
+    toggleArduinoPanel : () => dispatch(toggleArduinoPanel())
 });
 
 const ConnectedGUI = injectIntl(connect(

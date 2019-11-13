@@ -25,7 +25,9 @@ import {activateColorPicker} from '../reducers/color-picker';
 import {closeExtensionLibrary, openSoundRecorder, openConnectionModal} from '../reducers/modals';
 import {activateCustomProcedures, deactivateCustomProcedures} from '../reducers/custom-procedures';
 import {setConnectionModalExtensionId} from '../reducers/connection-modal';
-//const io = require("socket.io-client");
+const io = require("socket.io-client");
+//
+import {updateCode} from '../reducers/arduino-panel';
 
 import {
     activateTab,
@@ -71,7 +73,9 @@ class Blocks extends React.Component {
             'onWorkspaceUpdate',
             'onWorkspaceMetricsChange',
             'setBlocks',
-            'setLocale'
+            'setLocale',
+            //
+            'sb2cpp'
         ]);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -86,11 +90,11 @@ class Blocks extends React.Component {
 
 
 
-        this.props.vm.runtime.socket.on("recommendModule", msg => {
-            this.message = msg.message;
-            this.sprinkles(1);
-    
-        });
+        // this.props.vm.runtime.socket.on("recommendModule", msg => {
+        //     this.message = msg.message;
+        //     this.sprinkles(1);
+            
+        // });
     }
 
     sprinkles(n) {
@@ -102,13 +106,17 @@ class Blocks extends React.Component {
         var blocks = toolbox.getElementsByTagName('block');
         //var blocks=document.getElementById("eim.sendMessage");
         console.log(blocks);
-        for (var i = 0; i < n; i++) {
-          var blockXML = blocks[Math.floor(Math.random() * blocks.length)];
+        //for (var i = 0; i < n; i++) 
+        {
+          //var blockXML = blocks[Math.floor(Math.random() * blocks.length)];
+          var blockXML = blocks[blocks.length-1];
           var block = this.ScratchBlocks.Xml.domToBlock(blockXML, this.workspace);
           block.initSvg();
           block.moveBy(
-            Math.round(Math.random() * 450 + 40),
-            Math.round(Math.random() * 600 + 40)
+            // Math.round(Math.random() * 450 + 40),
+            // Math.round(Math.random() * 600 + 40)
+            Math.round(50 + 40),
+            Math.round(50 + 40)
           );
         }
     }
@@ -148,7 +156,7 @@ class Blocks extends React.Component {
         analytics.pageview('/editors/blocks');
 
 
-        //var blocks = document.getElementsByTagName('block');
+        // var blocks = document.getElementsByTagName('block');
         // var xml="<xml><variables></variables><block type='motion_movesteps' id='SBh;$cA)Z!2fjkf~Q;ol' x='44' y='1'><value name='STEPS'><shadow type='math_number' id='-Rwf|X(4VM@Un8KLf!#l'><field name='NUM'>10</field></shadow></value></block></xml>";
         // var bloc = this.ScratchBlocks.Xml.domToBlock(xml,this.workspace);
          //console.log(blocks[0]);
@@ -171,7 +179,7 @@ class Blocks extends React.Component {
             console.log('aaa');
         }
 
-		//返回一个布尔值。在组件接收到新的props或者state时被调用。在初始化时或者使用forceUpdate时不被调用。 可以在你确认不需要更新组件时使用。
+	//返回一个布尔值。在组件接收到新的props或者state时被调用。在初始化时或者使用forceUpdate时不被调用。 可以在你确认不需要更新组件时使用。
     shouldComponentUpdate (nextProps, nextState) {
         return (
             this.state.prompt !== nextState.prompt ||
@@ -258,7 +266,7 @@ class Blocks extends React.Component {
             this.workspace.toolbox_.setFlyoutScrollPos(currentCategoryPos + offset);
         } else {
             this.workspace.toolbox_.setFlyoutScrollPos(currentCategoryPos);
-				}
+		}
 				
         const queue = this.toolboxUpdateQueue;
         this.toolboxUpdateQueue = [];
@@ -274,7 +282,31 @@ class Blocks extends React.Component {
         }
     }
 
+    //
+    sb2cpp() {
+        let currentWorkspace = clonedeep(this.workspace);
+
+        //只有当arudino页面显示的时候才会进行代码转换
+        if(this.props.arduinoVisible) {
+            //需要处理去除workspace中非event开始的积木块列表
+            var blocks = currentWorkspace.getTopBlocks(true);
+            for(var i = blocks.length -1; i >= 0 ; i--) {
+                if(blocks[i].type != 'event_arduinobegin')
+                {
+                    currentWorkspace.removeTopBlock(blocks[i]);
+                }
+            }
+            var code = this.ScratchBlocks.Arduino.workspaceToCode(currentWorkspace);
+
+            //var code = this.ScratchBlocks.Arduino.workspaceToCode(this.workspace);
+            this.props.updateArduinoCode(code);
+        }
+    }
+
     attachVM () {
+        //
+        this.workspace.addChangeListener(this.sb2cpp);
+
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.flyoutWorkspace = this.workspace
             .getFlyout()
@@ -328,7 +360,7 @@ class Blocks extends React.Component {
         }
     }
     onWorkspaceMetricsChange () {
-				const target = this.props.vm.editingTarget;
+		const target = this.props.vm.editingTarget;
         if (target && target.id) {
             const workspaceMetrics = Object.assign({}, this.state.workspaceMetrics, {
                 [target.id]: {
@@ -356,10 +388,38 @@ class Blocks extends React.Component {
         this.workspace.reportValue(data.id, data.value);
     }
 
+    getToolboxXML () {
+        // Use try/catch because this requires digging pretty deep into the VM
+        // Code inside intentionally ignores several error situations (no stage, etc.)
+        // Because they would get caught by this try/catch
+        try {
+            let {editingTarget: target, runtime} = this.props.vm;
+            const stage = runtime.getTargetForStage();
+            if (!target) target = stage; // If no editingTarget, use the stage
 
+            const stageCostumes = stage.getCostumes();
+            const targetCostumes = target.getCostumes();
+            const targetSounds = target.getSounds();
+            const dynamicBlocksXML = this.props.vm.runtime.getBlocksXML();
+            return makeToolboxXML(target.isStage, target.id, dynamicBlocksXML,
+                targetCostumes[0].name,
+                stageCostumes[0].name,
+                targetSounds.length > 0 ? targetSounds[0].name : '',
+                this.props.arduinoVisible
+            );
+        } catch {
+            return null;
+        }
+    }
     
 
     onWorkspaceUpdate (data) {
+        //
+        const toolboxXML = this.getToolboxXML();
+        if (toolboxXML) {
+            this.props.updateToolboxState(toolboxXML);
+        }
+        
         //
         // var toolbox = this.workspace.options.languageTree;
         // var blocks = toolbox.getElementsByTagName('block');
@@ -521,6 +581,10 @@ class Blocks extends React.Component {
             onRequestCloseExtensionLibrary,
             onRequestCloseCustomProcedures,
             toolboxXML,
+            //
+            updateArduinoCode,
+            arduinoVisible,
+            //
             ...props
         } = this.props;
         /* eslint-enable no-unused-vars */
@@ -533,6 +597,9 @@ class Blocks extends React.Component {
                 />
                 {this.state.prompt ? (
                     <Prompt
+                        //
+                        defaultValue={this.state.prompt.defaultValue}
+                        //
                         isStage={vm.runtime.getEditingTarget().isStage}
                         label={this.state.prompt.message}
                         placeholder={this.state.prompt.defaultValue}
@@ -558,11 +625,11 @@ class Blocks extends React.Component {
                         }}
                         onRequestClose={this.handleCustomProceduresClose}
                     />
-								) : null}
+				) : null}
 								
 				</React.Fragment>
 
-				);
+		);
     }
 }
 
@@ -606,7 +673,10 @@ Blocks.propTypes = {
     stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
     toolboxXML: PropTypes.string,
     updateToolboxState: PropTypes.func,
-    vm: PropTypes.instanceOf(VM).isRequired
+    vm: PropTypes.instanceOf(VM).isRequired,
+    //
+    updateArduinoCode : PropTypes.func,
+    arduinoVisible: PropTypes.bool
 };
 
 Blocks.defaultOptions = {
@@ -621,7 +691,7 @@ Blocks.defaultOptions = {
         colour: '#ddd'
     },
     colours: {
-				workspace: '#B50606',
+				workspace: '#F9F9F9',
         flyout: '#F9F9F9',
         toolbox: '#FFFFFF',//#FFFFFF
         toolboxSelected: '#E9EEF2',
@@ -652,7 +722,9 @@ const mapStateToProps = state => ({
     locale: state.locales.locale,
     messages: state.locales.messages,
     toolboxXML: state.scratchGui.toolbox.toolboxXML,
-    customProceduresVisible: state.scratchGui.customProcedures.active
+    customProceduresVisible: state.scratchGui.customProcedures.active,
+    //
+    arduinoVisible: state.scratchGui.arduino.visible
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -674,7 +746,11 @@ const mapDispatchToProps = dispatch => ({
     },
     updateToolboxState: toolboxXML => {
         dispatch(updateToolbox(toolboxXML));
-    }
+    },
+    //
+    updateArduinoCode: editCode => {
+        dispatch(updateCode(editCode));
+    },
 });
 
 export default errorBoundaryHOC('Blocks')(

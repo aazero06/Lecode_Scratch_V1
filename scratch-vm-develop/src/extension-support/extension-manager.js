@@ -19,7 +19,13 @@ const Scratch3Ev3Blocks = require('../extensions/scratch3_ev3');
 const Scratch3MakeyMakeyBlocks = require('../extensions/scratch3_makeymakey');
 //helloworld
 const Scratch3HelloWorldBlocks = require('../extensions/scratch3_hello_world');
+const Scratch3BalancingCarBlocks=require('../extensions/scratch3_balancing_car');
+const ScratchElectronicCraneTowerBlocks=require('../extensions/scratch3_electronic_crane_tower');
+const ScratchMechanicalArmCarBlocks=require('../extensions/scratch3_mechanical_arm_car');
 
+
+const formatMessage = require("format-message");
+const ArgumentType = require("../extension-support/argument-type");
 
 const builtinExtensions = {
     pen: Scratch3PenBlocks,
@@ -33,7 +39,10 @@ const builtinExtensions = {
     ev3: Scratch3Ev3Blocks,
     makeymakey: Scratch3MakeyMakeyBlocks,
 
-    helloWorld: Scratch3HelloWorldBlocks
+    helloWorld: Scratch3HelloWorldBlocks,
+    balancingCar:Scratch3BalancingCarBlocks,
+    electronicCraneTower:ScratchElectronicCraneTowerBlocks,
+    mechanicalArmCar:ScratchMechanicalArmCarBlocks
 
 };
 
@@ -108,7 +117,43 @@ class ExtensionManager {
         dispatch.setService('extensions', this).catch(e => {
             log.error(`ExtensionManager was unable to register extension service: ${JSON.stringify(e)}`);
         });
+        const extension = builtinExtensions['helloWorld'];
+        this.extensionInstance=new extension(this.runtime);
+        
+        this.loadExtensionURL('helloWorld');
+        this.runtime.socket.on("clear",()=>{
+            this.extensionInstance.Info.blocks=[];
+            this.refreshBlocks();
+        })
+        this.runtime.socket.on("recommendModule", msg => {
+            var i=0;
+            for(var temp in msg.type)
+            {
+                    
+                this.extensionInstance.Info.blocks[i]=(
+                    {
+                        opcode: temp,
+                        blockType: BlockType.COMMAND,
+                        text: formatMessage({
+                            id: "eim"+temp,
+                            default: temp,
+                            description: "broadcast message to scratch3-adapter"
+                        }),
+
+                    }
+                );
+                i++;
+            }    
+
+            this.refreshBlocks();
+
+            
+        });
+        
+        
     }
+
+    
 
     /**
      * Check whether an extension is registered or is in the process of loading. This is intended to control loading or
@@ -127,19 +172,28 @@ class ExtensionManager {
      * @returns {Promise} resolved once the extension is loaded and initialized or rejected on failure
      */
     loadExtensionURL (extensionURL) {
+        console.log(extensionURL);
         if (builtinExtensions.hasOwnProperty(extensionURL)) {
             /** @TODO dupe handling for non-builtin extensions. See commit 670e51d33580e8a2e852b3b038bb3afc282f81b9 */
-            if (this.isExtensionLoaded(extensionURL)) {
+            if (this.isExtensionLoaded(extensionURL)&&extensionURL!='helloWorld') {
                 const message = `Rejecting attempt to load a second extension with ID ${extensionURL}`;
                 log.warn(message);
                 return Promise.reject(new Error(message));
             }
-
-            const extension = builtinExtensions[extensionURL];
-            const extensionInstance = new extension(this.runtime);
-            return this._registerInternalExtension(extensionInstance).then(serviceName => {
-                this._loadedExtensions.set(extensionURL, serviceName);
-            });
+            if(extensionURL!='helloWorld'){
+                const extension = builtinExtensions[extensionURL];
+                const extensionInstance = new extension(this.runtime);
+                return this._registerInternalExtension(extensionInstance).then(serviceName => {
+                    this._loadedExtensions.set(extensionURL, serviceName);
+                });
+            }else{
+                
+                return this._registerInternalExtension(this.extensionInstance).then(serviceName => {
+                    this._loadedExtensions.delete(extensionURL);
+                    this._loadedExtensions.set(extensionURL, serviceName);
+                });
+            }
+            
         }
 
         return new Promise((resolve, reject) => {

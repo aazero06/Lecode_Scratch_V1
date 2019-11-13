@@ -69,8 +69,58 @@ class EIMBlocks {
         //    this.socket.emit("print", { topic: TOPIC, payload: "收到了消息" });
 
         //});
-        
 
+
+        this.Info={
+            id: "eim",
+            name: "EIM",
+            menuIconURI: menuIconURI,
+            blockIconURI: blockIconURI,
+            blocks: [
+                // {
+                    
+                // },
+                // {
+                //     opcode: "broadcastMessage",
+                //     blockType: BlockType.COMMAND,
+                //     text: formatMessage({
+                //         id: "eim.sendMessage",
+                //         default: "broadcast",
+                //         description: "broadcast message to scratch3-adapter"
+                //     }),
+                //     // arguments: {
+                //     //     DATA: {
+                //     //         type: ArgumentType.STRING,
+                //     //         defaultValue: '测试'
+                            
+                //     //     }
+                //     // }
+                // }
+                // {
+                //     opcode: 'getComingMessage',
+                //     blockType: BlockType.COMMAND,
+                //     text: formatMessage({
+                //         id: 'music.setTempo',
+                //         default: 'set tempo to',
+                //         description: 'set tempo (speed) for notes, drums, and rests played'
+                //     }),
+                    
+                // },
+                // {
+                //     opcode: 'broadcastMessage',
+                //     blockType: BlockType.COMMAND,
+                //     text: formatMessage({
+                //         id: 'music.changeTempo',
+                //         default: 'change tempo by',
+                //         description: 'change tempo (speed) for notes, drums, and rests played'
+                //     }),
+                    
+                // },
+            ]
+            
+        };
+        
+        
     }
      
 
@@ -87,143 +137,14 @@ class EIMBlocks {
      * @returns {object} metadata for this extension and its blocks.
      */
     getInfo() {
-        return {
-            id: "eim",
-            name: "EIM",
-            menuIconURI: menuIconURI,
-            blockIconURI: blockIconURI,
-            blocks: [
-                //{
-                //  opcode: "whenMessageReceive",
-                //  blockType: BlockType.HAT,
-                //  text: formatMessage({
-                //    id: "eim.whenMessageReceive",
-                //    default: "when I receive [DATA]",
-                //    description: "receive target message"
-                //  }),
-                //  arguments: {
-                //    DATA: {
-                //      type: ArgumentType.STRING,
-                //      defaultValue: "hello"
-                //    }
-                //  }
-                //},
-                //{
-                //  opcode: "getComingMessage",
-                //  blockType: BlockType.REPORTER, // BOOLEAN, COMMAND
-                //  text: formatMessage({
-                //    id: "eim.getComingMessage",
-                //    default: "received message",
-                //    description: "received message"
-                //  }),
-                //  arguments: {}
-                //},
-                {
-                    opcode: "broadcastMessage",
-                    blockType: BlockType.COMMAND,
-                    text: formatMessage({
-                        id: "eim.sendMessage",
-                        default: "broadcast [DATA]",
-                        description: "broadcast message to scratch3-adapter"
-                    }),
-                    arguments: {
-                        DATA: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "hello"
-                        }
-                    }
-                }
-                //{
-                //  opcode: "whenTopicMessageReceive",
-                //  blockType: BlockType.HAT,
-                //  text: formatMessage({
-                //    id: "eim.whenTopicMessageReceive",
-                //    default: "when I receive [TOPIC] [DATA]",
-                //    description: "receive target topic message"
-                //  }),
-                //  arguments: {
-                //    TOPIC: {
-                //      type: ArgumentType.STRING,
-                //      defaultValue: "eim/python"
-                //    },
-                //    DATA: {
-                //      type: ArgumentType.STRING,
-                //      defaultValue: "hello"
-                //    }
-                //  }
-                //},
-                //{
-                //  opcode: "broadcastTopicMessage",
-                //  blockType: BlockType.COMMAND,
-                //  text: formatMessage({
-                //    id: "eim.sendTopicMessage",
-                //    default: "broadcast [TOPIC] [DATA]",
-                //    description: "broadcast topic message to scratch3-adapter"
-                //  }),
-                //  arguments: {
-                //    TOPIC: {
-                //      type: ArgumentType.STRING,
-                //      defaultValue: "eim/python"
-                //    },
-                //    DATA: {
-                //      type: ArgumentType.STRING,
-                //      defaultValue: 'print("hello")'
-                //    }
-                //  }
-                //},
-                //{
-                //  opcode: "control_extension",
-                //  blockType: BlockType.COMMAND,
-                //  text: formatMessage({
-                //    id: "eim.control_extension",
-                //    default: "[turn] [extension_name]",
-                //    description: "turn on/off the extension of scratch3-adapter"
-                //  }),
-                //  arguments: {
-                //    turn: {
-                //      type: ArgumentType.STRING,
-                //      defaultValue: "turn_on",
-                //      menu: "turn"
-                //    },
-                //    extension_name: {
-                //      type: ArgumentType.STRING,
-                //      defaultValue: "extension_eim",
-                //      menu: "extensions_name"
-                //    }
-                //  }
-                //},
-                //{
-                //  opcode: "is_extension_turned_on",
-                //  blockType: BlockType.REPORTER,
-                //  text: formatMessage({
-                //    id: "eim.is_extension_turned_on",
-                //    default: "is [extension_name] turned on?",
-                //    description: "get the extension statu"
-                //  }),
-                //  arguments: {
-                //    extension_name: {
-                //      type: ArgumentType.STRING,
-                //      defaultValue: "extension_eim",
-                //      menu: "extensions_name"
-                //    }
-                //  }
-                //}
-            ],
-            //menus: {
-            //  extensions_name: [
-            //    "extension_usb_microbit",
-            //    "extension_eim_monitor",
-            //    "extension_cozmo",
-            //    "extension_wechat",
-            //    "extension_eim",
-            //    "extension_eim_script",
-            //    "extension_python_kernel",
-            //    "extension_vector",
-            //    "extension_raspberrypi"
-            //  ],
-            //  turn: ["turn_on", "turn_off"]
-            //}
-        };
+
+        
+
+        
+        console.log(this.Info);
+        
+        return this.Info;
+        
     }
 
     /**
@@ -231,71 +152,75 @@ class EIMBlocks {
      * @return {object.<string, Function>} Mapping of opcode to Function.
      */
 
-    // when receive
-    whenMessageReceive(args) {
-        const targetMessage = args.DATA;
-        if (targetMessage === this.message) {
-            // console.log(`targetMessage: ${this.message}`);
-            this.message = null; // 每次清空
-            return true;
-        }
-    }
-    // broadcast message
-    // 使用广播的概念, 与scratch保持一致
-    broadcastMessage(args) {
-        const message = args.DATA;
+    Forward(args){
+        const message = 'Forward';
         this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
-        
+        return;
+    }
+    Back(args){
+        const message = 'Back';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
+        return;
+    }
+    TurnLeft(args){
+        const message = 'TurnLeft';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
+        return;
+    }
+    TurnRight(args){
+        const message = 'TurnRight';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
+        return;
+    }
+    Stop(args){
+        const message = 'Stop';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
         return;
     }
 
-    getComingMessage() {
-        return this.origin_message;
+    Up(args){
+        const message = 'Up';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
+        return;
     }
-
-    // when receive
-    whenTopicMessageReceive(args) {
-        const targetTopic = args.TOPIC;
-        const targetMessage = args.DATA;
-        if (targetMessage === this.message && targetTopic === this.topic) {
-            // console.log(`targetMessage: ${this.message}`);
-            this.message = null; // 每次清空
-            this.topic = null;
-            return true;
-        }
+    Down(args){
+        const message = 'Down';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
+        return;
     }
-
-    // broadcast message
-    // 使用广播的概念, 与scratch保持一致
-    broadcastTopicMessage(args) {
-        const topic = args.TOPIC;
-        const message = args.DATA;
-        this.runtime.socket.emit("actuator", { topic: topic, payload: message });
+    Hold(args){
+        const message = 'Hold';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
+        return;
+    }
+    Open(args){
+        const message = 'Open';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
         return;
     }
 
-    control_extension(args) {
-        const turn = args.turn;
-        const extension_name = args.extension_name;
-        const message = {
-            topic: "__control",
-            type: "web/extension_control",
-            payload: { action: turn, extension_name: extension_name }
-        };
-        this.runtime.socket.emit("actuator", message);
+    LeftSlider(args){
+        const message = 'LeftSlider';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
+        return;
+    }
+    RightSlider(args){
+        const message = 'RightSlider';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
+        return;
+    }
+    UpHook(args){
+        const message = 'UpHook';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
+        return;
+    }
+    DownHook(args){
+        const message = 'DownHook';
+        this.runtime.socket.emit("actuator", { topic: TOPIC, payload: message });
         return;
     }
 
-    is_extension_turned_on(args) {
-        const extension_name = args.extension_name;
-        if (this.extensions_statu) {
-            const statu = this.extensions_statu[extension_name];
-            return statu;
-        } else {
-            return false;
-        }
-    }
-}
+ }
 
 /*
 注意安全问题: 赋予用户强大的能力，但提醒他们担心锤子砸伤脚

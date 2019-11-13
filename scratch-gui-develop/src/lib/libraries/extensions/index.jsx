@@ -29,6 +29,13 @@ import wedoButtonImage from './peripheral-connection/wedo/wedo-button-illustrati
 import helloworldImage from './helloworld.png';
 import helloworldInsetImage from './peripheral-connection/wedo/wedo-button-illustration.svg';
 
+import balancingCarImage from './balancecar.png'
+import balancingCarImageInsetImage from './peripheral-connection/wedo/wedo-button-illustration.svg';
+import electronicCraneTowerImage from './electronicCraneTower.png'
+import electronicCraneTowerImageInsetImage from './peripheral-connection/wedo/wedo-button-illustration.svg';
+import mechanicalArmCarImage from './MechanicalArmCar.png'
+import mechanicalArmCarInsetImage from './peripheral-connection/wedo/wedo-button-illustration.svg';
+
 export default [
     {
         name: (
@@ -254,6 +261,72 @@ export default [
                 defaultMessage="hello world."
                 description="Description for the 'hello world' extension"
                 id="gui.extension.helloworld.description"
+            />
+        ),
+        featured: true
+
+
+    },
+    {
+		name: (
+            <FormattedMessage
+                defaultMessage="Balancing Car"
+                description="Name for the 'balancingCar' extension"
+                id="gui.extension.balancingCar.name"
+            />
+        ),
+        extensionId: 'balancingCar',
+        iconURL: balancingCarImage,
+        insetIconURL: balancingCarImageInsetImage,
+        description: (
+            <FormattedMessage
+                defaultMessage="Balancing Car."
+                description="Description for the 'balancingCar' extension"
+                id="gui.extension.balancingCar.description"
+            />
+        ),
+        featured: true
+
+
+    },
+    {
+		name: (
+            <FormattedMessage
+                defaultMessage="Mechanical Arm Car"
+                description="Name for the 'mechanicalArmCar' extension"
+                id="gui.extension.mechanicalArmCar.name"
+            />
+        ),
+        extensionId: 'mechanicalArmCar',
+        iconURL: mechanicalArmCarImage,
+        insetIconURL: mechanicalArmCarInsetImage,
+        description: (
+            <FormattedMessage
+                defaultMessage="Mechanical Arm Car."
+                description="Description for the 'mechanicalArmCar' extension"
+                id="gui.extension.mechanicalArmCar.description"
+            />
+        ),
+        featured: true
+
+
+    },
+    {
+		name: (
+            <FormattedMessage
+                defaultMessage="Electronic Crane Tower"//加黑标题信息
+                description="Name for the 'electronicCraneTower' extension"
+                id="gui.extension.electronicCraneTower.name"
+            />
+        ),
+        extensionId: 'electronicCraneTower',
+        iconURL: electronicCraneTowerImage,
+        insetIconURL: electronicCraneTowerImageInsetImage,
+        description: (
+            <FormattedMessage
+                defaultMessage="Electronic Crane Tower."//下面的描述信息
+                description="Description for the 'electronicCraneTower' extension"
+                id="gui.extension.electronicCraneTower.description"
             />
         ),
         featured: true

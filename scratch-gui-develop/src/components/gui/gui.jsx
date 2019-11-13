@@ -1,7 +1,8 @@
 import classNames from 'classnames';
 import omit from 'lodash.omit';//省略对象中的某一个值
 import PropTypes from 'prop-types';//数据类型检查
-import React from 'react';
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';//做国际化，实现多语言
 import {connect} from 'react-redux';
 import MediaQuery from 'react-responsive';
@@ -41,6 +42,11 @@ import codeIcon from './icon--code.svg';
 import costumesIcon from './icon--costumes.svg';
 import soundsIcon from './icon--sounds.svg';
 
+//
+import ArduinoPanel from '../arduino/arduino-panel.jsx';
+//
+
+
 const messages = defineMessages({
     addExtension: {
         id: 'gui.gui.addExtension',
@@ -52,7 +58,7 @@ const messages = defineMessages({
 // Cache this value to only retrieve it once the first time.
 // Assume that it doesn't change for a session.
 let isRendererSupported = null;
-//    函数名          参数      函数体
+//    函数名          参数       函数体
 const GUIComponent = props => {
     const {
         accountNavOpen,
@@ -107,8 +113,15 @@ const GUIComponent = props => {
         targetIsStage,
         tipsLibraryVisible,
         vm,
+        //
+        showArduinoPanel,
+        toggleArduinoPanel,
+        arduinoEditorCode,
+        arduinoFirewares,
+        windowHeight,
+        //
         ...componentProps
-    } = omit(props, 'dispatch');//返回除去props对象中包含的dispatch对象
+    } = omit(props, 'dispatch'); //返回除去props对象中包含的dispatch对象
     if (children) {
         return <Box {...componentProps}>{children}</Box>;
     }
@@ -139,15 +152,17 @@ const GUIComponent = props => {
                     <Alerts className={styles.alertsContainer} />
                 ) : null}
             </StageWrapper>
+            
         ) : (
             <Box
                 className={styles.pageWrapper}
                 dir={isRtl ? 'rtl' : 'ltr'}
                 {...componentProps}
             >
-                {previewInfoVisible ? (
+                
+                {/* {previewInfoVisible ? (
                     <PreviewModal />
-                ) : null}
+                ) : null} */}
                 {loading ? (
                     <Loader />
                 ) : null}
@@ -183,6 +198,7 @@ const GUIComponent = props => {
                         onRequestClose={onRequestCloseBackdropLibrary}
                     />
                 ) : null}
+
                 <MenuBar
                     accountNavOpen={accountNavOpen}
                     authorId={authorId}
@@ -207,9 +223,13 @@ const GUIComponent = props => {
                     onShare={onShare}
                     onToggleLoginOpen={onToggleLoginOpen}
                     onUpdateProjectTitle={onUpdateProjectTitle}
+                    vm={vm}
+                    
                 />
                 <Box className={styles.bodyWrapper}>
-                    <Box className={styles.flexWrapper}>
+                    <Box className={styles.flexWrapper}> 
+                        
+                        {/*Tabs Wrapper*/}
                         <Box className={styles.editorWrapper}>
                             <Tabs
                                 forceRenderTabPanel
@@ -267,6 +287,7 @@ const GUIComponent = props => {
                                             id="gui.gui.soundsTab"
                                         />
                                     </Tab>
+                                
                                 </TabList>
                                 <TabPanel className={tabClassNames.tabPanel}>
                                     <Box className={styles.blocksWrapper}>
@@ -305,33 +326,47 @@ const GUIComponent = props => {
                                     {soundsTabVisible ? <SoundTab vm={vm} /> : null}
                                 </TabPanel>
                             </Tabs>
-                            {backpackVisible ? (
+
+                            {/*hide backpack*/}
+                            {/* {backpackVisible ? (
                                 <Backpack host={backpackHost} />
-                            ) : null}
+                            ) : null} */}
                         </Box>
 
+                        {/*stage Wrapper*/}
+                        
                         <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize])}>
-                            <StageWrapper
-                                isRendererSupported={isRendererSupported}
-                                stageSize={stageSize}
-                                vm={vm}
-                            />
-                            <Box className={styles.targetWrapper}>
-                                <TargetPane
+
+                                <StageWrapper
+                                    isRendererSupported={isRendererSupported}
+                                    isRtl={isRtl}
                                     stageSize={stageSize}
                                     vm={vm}
                                 />
-                            </Box>
-                        </Box>
-                    </Box>
-                </Box>
-                <DragLayer />
-            </Box>
-        );
-		}}</MediaQuery>);
+                                <Box className={classNames(styles.targetWrapper)}>
+                                    <TargetPane
+                                        stageSize={stageSize}
+                                        vm={vm}
+                                    />
+                                </Box> 
 
-		
+                        </Box>
+                            
+                    </Box>
+     
+                </Box>
+
+                <DragLayer />
+                
+               {/* <ArduinoPanel/>  */}
+
+            </Box>
+            
+        );
+    }}</MediaQuery>);
+    		
 };
+
 
 GUIComponent.propTypes = {
     accountNavOpen: PropTypes.bool,
@@ -384,7 +419,10 @@ GUIComponent.propTypes = {
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
     targetIsStage: PropTypes.bool,
     tipsLibraryVisible: PropTypes.bool,
-    vm: PropTypes.instanceOf(VM).isRequired
+    vm: PropTypes.instanceOf(VM).isRequired,
+    //
+    showArduinoPanel : PropTypes.bool,
+    toggleArduinoPanel : PropTypes.func
 };
 GUIComponent.defaultProps = {
     backpackHost: null,
@@ -406,7 +444,10 @@ GUIComponent.defaultProps = {
 
 const mapStateToProps = state => ({
     // This is the button's mode, as opposed to the actual current state 这是按钮的模式，而不是实际的当前状态
-    stageSizeMode: state.scratchGui.stageSize.stageSize
+    stageSizeMode: state.scratchGui.stageSize.stageSize,
+    // editorMode: state.scratchGui.editorModes.currentMode
 });
 
-export default injectIntl(connect(mapStateToProps)(GUIComponent));
+export default injectIntl(
+    connect(mapStateToProps)(GUIComponent)
+);

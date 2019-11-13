@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\scratch-gui-develop",
+    "\\scratch-gui-develop\\src",
+    "\\scratch-gui-develop\\src\\components",
+    "\\scratch-gui-develop\\src\\components\\blocks",
+    "\\scratch-gui-develop\\src\\components\\gui",
+    "\\scratch-gui-develop\\src\\containers",
+    "\\scratch-gui-develop\\src\\lib",
+    "\\scratch-vm-develop",
+    "\\scratch-vm-develop\\src",
+    "\\scratch-vm-develop\\test"
+  ],
+  "SelectedNode": "\\scratch-gui-develop\\src\\components\\box\\box.jsx",
+  "PreviewInSolutionExplorer": false
+}

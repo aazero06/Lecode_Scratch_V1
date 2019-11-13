@@ -136,7 +136,10 @@
     }
   },
   "dependencies": {
+    "arduino": "^0.2.3",
+    "arduino-node": "^0.5.2",
     "fs": "0.0.1-security",
+    "react-flexible-switch": "^1.2.1",
     "socket.io": "^2.2.0",
     "uws": "^100.0.1"
   }
