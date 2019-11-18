@@ -1,4 +1,4 @@
 ## Lecode_Scratch
-Adding react-switch botton to menu-bar
+Adding react-switch button to menu-bar
 
 
